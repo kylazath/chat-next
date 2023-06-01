@@ -6,9 +6,11 @@ import { useState } from 'react'
 export default function SearchPostsDropdown({ search, setSearch, currentUser, room, setMessages, messagesTopRef }) {
   const [searchedMessages, setSearchedMessages] = useState([])
   const [searching, setSearching] = useState(false)
+  const [responseMessage, setResponseMessage] = useState('')
   
   const onSubmit = async (event) => {
     event.preventDefault()
+    setResponseMessage(() => '')
     setSearchedMessages(() => [])
     setSearching(true)
     const url = new URL('/api/messages/search', window.location.origin)
@@ -22,12 +24,17 @@ export default function SearchPostsDropdown({ search, setSearch, currentUser, ro
     })
     const foundMessages = await response.json()
     setSearching(false)
-    setSearchedMessages(() => [...foundMessages])
+    if (foundMessages.length > 0) {
+      setSearchedMessages(() => [...foundMessages])
+    } else {
+      setResponseMessage(() => 'No messages found')
+    }
   }
 
   const onBlur = async (event) => {
     if (!event.relatedTarget) {
       setSearchedMessages(() => [])
+      setResponseMessage(() => '')
     }
   }
 
@@ -42,6 +49,7 @@ export default function SearchPostsDropdown({ search, setSearch, currentUser, ro
       }
     })
     const foundMessages = await response.json()
+    setResponseMessage(() => '')
     setSearchedMessages(() => [])
     setMessages(() => {
       messagesTopRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
@@ -56,10 +64,17 @@ export default function SearchPostsDropdown({ search, setSearch, currentUser, ro
         setSearch={setSearch}
       />
       {
-        (searching || (searchedMessages.length > 0)) && (
+        (searching || (searchedMessages.length > 0) || (responseMessage.length > 0)) && (
           <div style={{ width: 'calc(100% - 1px)' }} className="border border-black rounded p-2 absolute top-0 translate-y-[2.1rem] border-black z-[1] bg-white">
             {
               searching && <Spinner />
+            }
+            {
+              (responseMessage.length > 0) && (
+                <p className="text-center py-3">
+                  {responseMessage}
+                </p>
+              )
             }
             {
               searchedMessages.map((message) => (

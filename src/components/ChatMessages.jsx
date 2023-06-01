@@ -1,6 +1,22 @@
 import Message from './Message'
 
-export default function ChatMessages({ firstMessageId, messages, loading, onLoadMore, currentUser, messagesEndRef, messagesTopRef, messagesContainerRef }) {
+export default function ChatMessages({ firstMessageId, messages, setMessages, loading, setLoading, currentUser, messagesEndRef, messagesTopRef, messagesContainerRef, room }) {
+  const onLoadMore = async () => {
+    setLoading(true)
+    const url = new URL('/api/messages/before', window.location.origin)
+    url.searchParams.append('messageId', messages[0].id)
+    url.searchParams.append('roomId', room.id)
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    const olderMessages = await response.json()
+    setMessages((messages) => [...olderMessages, ...messages])
+    setLoading(false)
+  }
+
   return (
     <div
       id="messages"
