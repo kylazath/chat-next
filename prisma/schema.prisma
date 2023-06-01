@@ -63,6 +63,7 @@ model VerificationToken {
 
 model Room {
   id          String   @id @default(cuid())
+  sequence    Int      @unique @default(autoincrement())
   name        String   @unique
   description String?
   authorId    String   @map("author_id")
