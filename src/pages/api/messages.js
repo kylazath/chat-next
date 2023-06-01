@@ -1,8 +1,7 @@
-import pusher from '../../../src/app/lib/pusher-pusher'
+import pusher from '@/lib/pusher'
 import { getServerSession } from "next-auth/next"
-import authOptions from '@/app/lib/auth-options'
-import prisma from './../../../prisma/client'
-import { signOut } from "next-auth/react"
+import authOptions from '@/lib/auth-options'
+import prisma from '~/prisma/client'
 
 export default async function handler (req, res) {
   const session = await getServerSession(req, res, authOptions)

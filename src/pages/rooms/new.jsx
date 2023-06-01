@@ -1,8 +1,8 @@
-import authOptions from '@/app/lib/auth-options'
+import authOptions from '@/lib/auth-options'
 import { getServerSession } from "next-auth/next"
-import { signOut } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import redirectToRoot from '@/lib/redirect-to-root';
 
 export default function Rooms() {
   const router = useRouter();
@@ -58,15 +58,7 @@ export default function Rooms() {
 
 export async function getServerSideProps(context) {
   const session = await getServerSession(context.req, context.res, authOptions)
-
-  if (!session) {
-    return {
-      redirect: {
-        destination: '/',
-        permanent: false
-      }
-    }
-  }
+  if (!session) return redirectToRoot;
 
   return {
     props: {

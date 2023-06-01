@@ -1,5 +1,5 @@
-import pusher from './../../../app/lib/pusher-pusher'
-import authOptions from '@/app/lib/auth-options'
+import pusher from '@/lib/pusher'
+import authOptions from '@/lib/auth-options'
 import { getServerSession } from "next-auth/next"
 
 export default async function handler(req, res) {

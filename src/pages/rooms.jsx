@@ -1,8 +1,8 @@
-import authOptions from '@/app/lib/auth-options'
+import authOptions from '@/lib/auth-options'
 import { getServerSession } from "next-auth/next"
-import prisma from './../../prisma/client'
+import prisma from '~/prisma/client'
 import RoomPreview from '@/components/RoomPreview'
-import { signOut } from "next-auth/react"
+import redirectToRoot from '@/lib/redirect-to-root'
 
 export default function Rooms({ rooms }) {
   return (
@@ -29,15 +29,7 @@ export default function Rooms({ rooms }) {
 
 export async function getServerSideProps(context) {
   const session = await getServerSession(context.req, context.res, authOptions)
-
-  if (!session) {
-    return {
-      redirect: {
-        destination: '/',
-        permanent: false
-      }
-    }
-  }
+  if (!session) return redirectToRoot;
 
   const rooms = await prisma.room.findMany({})
   const safeDatesRooms = JSON.parse(JSON.stringify(rooms))

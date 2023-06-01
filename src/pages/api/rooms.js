@@ -1,7 +1,6 @@
-import prisma from "./../../../prisma/client";
+import prisma from "~/prisma/client";
 import { getServerSession } from "next-auth/next";
-import authOptions from '@/app/lib/auth-options';
-import { signOut } from "next-auth/react"
+import authOptions from '@/lib/auth-options';
 
 export default async function handler(req, res) {
   const session = await getServerSession(req, res, authOptions)

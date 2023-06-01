@@ -1,7 +1,7 @@
-import authOptions from '@/app/lib/auth-options'
+import authOptions from '@/lib/auth-options'
 import { getServerSession } from "next-auth/next"
-import prisma from './../../../../prisma/client'
-import { signOut } from "next-auth/react"
+import prisma from '~/prisma/client'
+import formatMessagesTime from '@/lib/format-messages-time'
 
 export default async function handler(req, res) {
   const session = await getServerSession(req, res, authOptions)
@@ -23,11 +23,7 @@ export default async function handler(req, res) {
   })
   if (!messages) return res.status(404).json({})
 
-  const formattedMessages = messages.map((message) => {
-    const date = new Date(message.createdAt)
-    message.createdAt = `${date.toLocaleTimeString()} ${date.toLocaleDateString()}`
-    return message
-  })
-
-  res.status(200).send(formattedMessages);
+  res.status(200).send(
+    formatMessagesTime(messages)
+  );
 }
