@@ -50,22 +50,6 @@ export default function Room({ room, firstMessageId }) {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' })
   }, [])
 
-  const onLoadMore = async () => {
-    setLoading(true)
-    const url = new URL('/api/messages/before', window.location.origin)
-    url.searchParams.append('messageId', messages[0].id)
-    url.searchParams.append('roomId', room.id)
-    const response = await fetch(url, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    })
-    const olderMessages = await response.json()
-    setMessages((messages) => [...olderMessages, ...messages])
-    setLoading(false)
-  }
-
   return (
     <div className="container px-5 mx-auto">
       <div className="flex-1 p:2 sm:p-6 justify-between flex flex-col h-[75vh]">
@@ -89,12 +73,14 @@ export default function Room({ room, firstMessageId }) {
         <ChatMessages
           firstMessageId={firstMessageId}
           messages={messages}
+          setMessages={setMessages}
           loading={loading}
-          onLoadMore={onLoadMore}
           currentUser={user}
           messagesTopRef={messagesTopRef}
           messagesEndRef={messagesEndRef}
           messagesContainerRef={messagesContainerRef}
+          setLoading={setLoading}
+          room={room}
         />
         <ChatMessageForm
           room={room}
